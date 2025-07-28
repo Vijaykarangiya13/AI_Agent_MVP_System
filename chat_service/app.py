@@ -12,7 +12,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Configure Gemini API
-GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "AIzaSyBDy2EW8XxdELXOjM1Shos_8Gl_YnwzuRc")
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "put your api key here")
 client = genai.Client(api_key=GEMINI_API_KEY)
 
 # Service URLs
