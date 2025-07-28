@@ -220,3 +220,4 @@ Vijay Karangiya — [GitHub](https://github.com/Vijaykarangiya13)
 ## License
 
 MIT
+Update README.md with full project setup and documentation
