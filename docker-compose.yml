@@ -1,0 +1,66 @@
+version: '3'
+
+services:
+  chat-service:
+    build:
+      context: ./chat_service
+    ports:
+      - "8000:8000"
+    environment:
+      - GEMINI_API_KEY=AIzaSyBDy2EW8XxdELXOjM1Shos_8Gl_YnwzuRc
+      - KNOWLEDGE_BASE_URL=http://knowledge-base-service:8001
+      - SEARCH_URL=http://search-service:8002
+      - HISTORY_URL=http://history-service:8003
+    depends_on:
+      - knowledge-base-service
+      - search-service
+      - history-service
+    volumes:
+      - ./chat_service:/app
+    command: uvicorn app:app --host 0.0.0.0 --port 8000 --reload
+
+  knowledge-base-service:
+    build:
+      context: ./knowledge_base_service
+    ports:
+      - "8001:8001"
+    environment:
+      - GEMINI_API_KEY=AIzaSyBDy2EW8XxdELXOjM1Shos_8Gl_YnwzuRc
+    volumes:
+      - ./knowledge_base_service:/app
+      - ./data:/app/data
+    command: uvicorn app:app --host 0.0.0.0 --port 8001 --reload
+
+  search-service:
+    build:
+      context: ./search_service
+    ports:
+      - "8002:8002"
+    volumes:
+      - ./search_service:/app
+    command: uvicorn app:app --host 0.0.0.0 --port 8002 --reload
+
+  history-service:
+    build:
+      context: ./history_service
+    ports:
+      - "8003:8003"
+    environment:
+      - MONGO_URI=mongodb://mongo:27017/
+      - DB_NAME=ai_agent_mvp
+      - COLLECTION_NAME=chat_history
+    depends_on:
+      - mongo
+    volumes:
+      - ./history_service:/app
+    command: uvicorn app:app --host 0.0.0.0 --port 8003 --reload
+
+  mongo:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+
+volumes:
+  mongodb_data:
